@@ -1,0 +1,164 @@
+.\" lcal.man - documentation for Lcal v1.2
+.\"
+.TH LCAL 1 "February 29, 1996" "Version 1.2" "USER COMMANDS"
+.SH NAME
+lcal \- generate PostScript lunar phase calendars
+.SH SYNOPSIS
+.na
+.in +5n
+.ti -5n
+.B lcal
+[\fB\-d\fP\ [\fIday_font\fP\|]]
+[\fB\-t\fP\ [\fItitle_font\fP\|]]
+[\fB\-o\fP\ \fIfile\fP\|]
+[\fB\-l\fP\ |\ \fB\-p\fP]
+[\fB\-s\fP\ [[\fIbg_color\fP]\|][/\fIfg_color\fP\|]]
+[\fB\-i\fP]
+[\fB\-z\fP\ \fItime_zone\fP\|]
+[\fB\-S\fP]
+[\fB\-X\fP\ [\fIx1\fP[/\fIx2\fP\|]]]
+[\fB\-Y\fP\ [\fIy1\fP[/\fIy2\fP\|]]]
+[\fB\-W\fP]
+[\fB\-h\fP\ |\ \fB\-u\fP\ |\ \fB\-v\fP]
+[year]
+.SH DESCRIPTION
+.I Lcal
+generates PostScript to produce landscape or portrait lunar phase
+calendars for any 
+year.  The
+.B year
+argument, if provided,
+may be specified as either 1 or 2 digits or as the full 4 digit year;
+if omitted, the calendar for the current
+year will be generated.
+.PP
+.B Options
+.PP
+.TP
+.BI \-d " \fR[\fIfont\fR]"
+Specifies the name of the font used to print the weekday names.
+.TP
+.BI \-t " \fR[\fIfont\fR]"
+Specifies the name of the font used to print the year, month/day names, and
+dates.
+.TP
+.BI \-o " file"
+Directs
+.I lcal
+to write the output to
+.I file
+instead of to stdout.
+.TP
+.B \-l
+Causes the output to be in landscape mode (default).
+.TP
+.B \-p
+Causes the output to be in portrait mode.
+.TP
+.BI \-s " [bg_color][/fg_color]"
+Overrides the default values for the background/foreground colors.  These values
+must be in the range 0.0 (black) through 1.0 (white); they may be set
+independently of each other.  The default values are 1.0/0.0 (white background,
+black moons and text).
+.TP
+.BR "    Note:"
+For use with color printers, \fBbg_color\fP and \fBfg_color\fP may
+optionally be specified as a set of \fIred\fP:\fIgreen\fP:\fIblue\fP values;
+\fIred\fP, \fIblue\fP, and \fIgreen\fP must in the range 0.0 through 1.0.  At
+least one ':' must be present for this option to be recognized; omitted
+values are set to 0.0.  (Recommended: \fI-s0:0:0.7/0.9\fR, light gray
+moons and text against a midnight blue background.)
+.TP
+.B \-i
+Inverts the output colors, printing white moons on a black background
+(equivalent to \fB-s 0.0/1.0\fP).
+.TP
+.BI \-z " time_zone"
+Specifies the local time zone, expressed as hours west of UTC (e.g., Boston
+= 5).
+.TP
+.B \-S
+Compresses the output to fit on a single page.
+.TP
+.BI \-X " \fR[\fIx1\fR[/\fIx2\fR]\fR]"
+Specifies the X-axis translation values (page 1/page 2) for positioning the
+output on the page.
+.TP
+.BI \-Y " \fR[\fIy1\fR[/\fIy2\fR]\fR]"
+Similar to the
+.B \-X
+option, but specifies the X-axis translation values for positioning the
+output on the page.  The
+.B \-X
+and
+.B \-Y
+options allow the user to compensate for printer-to-printer variations in
+the centering of output.  (Many printers will not print to the absolute
+edge of the physical page; if this is the case at your site, try
+\fB-X-20/20 -Y20/-20\fP).
+.TP
+.B \-W
+Causes
+.I lcal
+to print the weekday names in the center of the moon icons instead of
+to the lower left.  This option can be very slow.
+.TP
+.B \-h
+Causes
+.I lcal
+to write version information, parameter usage message, and full explanation of options
+and file formats (to
+.IR stdout )
+and terminate.
+.TP
+.B \-u
+Causes
+.I lcal
+to write version information and parameter usage message (to
+.IR stdout )
+and terminate.
+.TP
+.B \-v
+Causes
+.I lcal
+to write version information only (to
+.IR stdout )
+and terminate.
+.IP
+If the environment variable
+.BR LCAL_OPTS
+is defined, its contents are parsed as a command line.  Flags set via
+.BR LCAL_OPTS
+override the program defaults, but are overridden by options set
+explicitly on the command line.
+.SH CAVEATS
+If the background color is darker than the foreground color,
+.I lcal
+inverts the moon phase to ensure that full moons are printed
+in the lighter color.  It determines this by comparing the grayscale
+value (or average of the r:g:b values) of the background and foreground
+colors; however, this isn't foolproof.  For example,
+.I lcal
+can't determine that that yellow (1:1:0) appears lighter on the physical
+page than cyan (0:1:1).
+.SH SEE ALSO
+cal(1),
+calendar(1).
+.SH AUTHORS
+Lcal was written by Andrew Rogers.  It is largely based on pcal, originally
+written by
+Patrick Wood (Copyright (c) 1987 by Patrick Wood of Pipeline Associates,
+Inc.), and authorized for modification and redistribution.  The original
+C version of pcal was created by Ken Keirnan; the moon phase routines were
+written by Jef Poskanzer and Craig Leres (copyright 1988, with permission
+to use, copy, modify, and distribute) and modified further by Mark Hanson
+(PostScript) and Richard Dyson (C).
+.SH ACKNOWLEDGMENT
+Lcal was inspired by "Moonlight 1996", a 16" x 36" full-color (silver moons
+against a midnight blue background) lunar phase calendar marketed by Celestial
+Products, Inc., P.O. Box 801, Middleburg VA  22117.  Send for their catalog
+to see (and, hopefully, order) this as well as some even more amazing
+stuff - particularly "21st Century Luna", a 22" x 72" lunar phase calendar
+for \fIevery day\fP of the upcoming century.  Or visit their site:
+.PP
+  http://www.celestialproducts.com
