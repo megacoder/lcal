@@ -1,0 +1,132 @@
+"Lcal" Version 1.2
+
+This is a new release of "lcal", the PostScript lunar phase calendar
+program.  The major new features are:
+
+      . a Y2K-related bug in the default year calculation has been fixed;
+
+      . a man page has been added;
+
+      . many program defaults may now be specified in the Makefile;
+
+      . the Makefile has several new targets (read it for details);
+
+      . the usage message is piped through a screen pager (Un*x only).
+
+      . the -s flag (see below) allows the user to specify the background
+	and foreground colors as grayscale values or red:green:blue values.
+
+      . the -S flag (see below) prints a smaller, single-page calendar.
+
+      .	the distribution includes .html and .cgi files for setting up an
+	Lcal server using Netscape (maybe others; I haven't tried them)
+	under Un*x.
+
+Lcal generates a PostScript file which prints a two-page calendar showing
+the phase of the moon for every day in the specified year.  This calendar
+may be printed in either landscape or portrait mode (cf. -l and -p below).
+
+Usage: lcal [-d|-t <FONT>] [-o <FILE>] [-l|-p] [-s {<b>}{/<f>}] [-i]
+            [-z <VALUE>] [-S] [-X|-Y <n>{/<n>}] [-W] [-h|-u|-v] [YY]
+
+	-d <FONT>       specify alternate font for weekday names
+	-t <FONT>       specify alternate font for year/months/dates
+
+	-o <FILE>       specify alternate output file (default: stdout)
+
+	-l              generate landscape-style calendar
+	-p              generate portrait-style calendar
+	                  (default: landscape)
+
+	-s {<b>}{/<f>}  specify back/foreground colors (grayscale or r:g:b)
+	                  (default: 1/0)
+
+	-i              invert colors (white moons on black background)
+
+	-z <VALUE>      specify alternate time zone (default: 0)
+
+	-S		compress output to fit on single page
+
+	-X <n>{/<n>}    specify X offset (p.1/p.2)
+	                  (default: 0/0)
+	-Y <n>{/<n>}    specify Y offset (p.1/p.2)
+	                  (default: 0/0)
+
+	-W              print weekdays inside moons (warning: very slow)
+
+	-h              print this help message
+	-u              print usage message
+	-v              print version stamp
+
+	YY              generate calendar for year YY (19YY if YY < 100)
+	(default)       generate calendar for current year
+
+
+Notes:
+
+  Some fudging of the -X and -Y flags may be necessary.  As shipped (-X0/0,
+  -Y0/0), lcal will attempt to print the two pages so that the last moons on
+  the first page are immediately adjacent to the first moons on the second;
+  however, many printers can't actually print to the edges of the physical
+  page.  If this is the case, tweak the Makefile as follows and rebuild:
+
+	# specify local default X/Y offsets
+	D_XOFFSET = '-DX_OFFSET="-20/20"'
+	D_YOFFSET = '-DY_OFFSET="20/-20"'
+
+  The time zone flag, -z, takes hours west of UTC (e.g., Boston = 5) as its
+  argument.
+
+  If the -s (or -i, equivalent to -s0/1) flag is used, lcal attempts to
+  determine whether the background color is darker than the foreground color;
+  if so, lcal inverts the moon phase to ensure that a full moon is printed
+  in the lighter color.
+  
+  If desired, all flags except -[huv] may be specified in environment variable
+  LCAL_OPTS.
+
+
+Credits:
+
+The original calendar PostScript was Copyright (c) 1987 by Patrick Wood
+and Pipeline Associates, Inc. with permission to modify and redistribute.
+
+The following people contributed to Lcal (directly or indirectly):
+
+	Moon phase code:				Jef Poskanzer and
+							  Craig Leres
+	VMS support:					Richard Dyson
+	Other C and PostScript code:			Andrew Rogers
+
+Lcal was inspired by "Moonlight 1996", a 16" x 36" full-color (silver moons
+against a midnight blue background) lunar phase calendar marketed by
+Celestial Products, Inc., P.O. Box 801, Middleburg VA  22117.  Send for
+their catalog to see (and, hopefully, order) this as well as some even more
+amazing stuff - particularly "21st Century Luna", a lunar phase calendar for
+*every day* of the new century.
+
+Andrew Rogers
+25 January 2000
+
+------------------------------------------------------------------------
+
+The following is the original Pcal "ReadMe" file:
+
+
+"Pcal" is a program to print PostScript calendars for any month and year.
+By default, it looks for a file in the home directory named "calendar"
+for entries with leading dates matching dates on the calendar, and prints
+any following text under the appropriate day.
+
+The program may be a little System V flavored (getopt, time routines)
+but should be easily portable to other vintages of UNIX.
+
+Pcal is the combined effort of several people, most notably Patrick Wood
+of Pipeline Associates, Inc. for the original PostScript code and Bill
+Vogel of AT&T for the calendar file mechanism.  My [Ken Keirnan's] part was
+simple translation to a "C" program, the addition of a couple options and
+a more generalized date searching routine (oh yes, and a manual page :-).
+
+The original calendar PostScript was Copyright (c) 1987 by Patrick Wood
+and Pipeline Associates, Inc. with permission to modify and redistribute.
+Please retain this README file with the package.

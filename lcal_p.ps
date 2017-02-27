@@ -1,0 +1,210 @@
+% lcal_p.ps - PostScript lunar phase calendar (portrait)
+%
+% Author: Andrew Rogers
+%
+
+/width 43 def
+/height 43 def
+/negwidth width neg def
+/negheight height neg def
+/halfwidth width 2 div def
+/halfheight height 2 div def
+/neghalfwidth halfwidth neg def
+/neghalfheight halfheight neg def
+/pagewidth 612 def
+/pageheight 792 ysval div dup 1584 gt { pop 1584 } if def
+/margin pagewidth width 12 mul sub 2 div def
+/topmargin pageheight height pagebreak mul sub def
+/Xnext width def
+/Ynext 0 def
+/rval 0 def
+/halfperiod 0.5 def
+/quartperiod 0.25 def
+/radius 15 def
+/rect radius 2 sqrt mul quartperiod div def
+
+/center {
+  /wid exch def
+  /str exch def
+  wid str stringwidth pop sub 2 div 0 rmoveto str
+} def
+
+/drawtitle {
+  titlefont findfont titlefontsize scalefont setfont
+  /yearstring year 10 string cvs def
+  margin neg 40 moveto
+  yearstring pagewidth center show
+} def
+
+/drawmonths {
+  titlefont findfont monthfontsize scalefont setfont
+  0 1 11 {
+    /i exch def
+    gsave
+    month_names i get width center show
+    grestore
+    width 0 rmoveto
+  } for
+} def
+
+/startpage {
+  /xtval pagewidth 1 xsval sub mul margin add def
+  /ytval pageheight topmargin sub fudge add def
+  rval rotate
+  xsval ysval scale
+  xtval ytval translate
+  newpath
+  margin neg topmargin fudge sub moveto
+  pagewidth 0 rlineto
+  0 pageheight neg rlineto
+  pagewidth neg 0 rlineto closepath clip
+  0.1 setlinewidth
+  clippath setbackground fill
+  setforeground
+} def
+
+/drawdate {
+  /daystr day 3 string cvs def
+  /w margin halfwidth add radius sub def
+  /y datefontsize 0.375 mul neg def
+  titlefont findfont datefontsize scalefont setfont
+  gsave
+  neghalfwidth margin sub y rmoveto
+  daystr w center show
+  grestore
+  gsave
+  width 11 mul radius add y rmoveto
+  daystr w center show
+  grestore
+} def
+
+/drawweekdays {
+  dayfont findfont weekdayfontsize scalefont setfont
+  /n day 1 sub 12 mul def
+  gsave
+  neghalfwidth weekdayfontsize 0.375 mul neg rmoveto
+  0 1 11 {
+    /month exch def
+    /phase moon_phases n get def
+    phase 0 ge {
+      /wkd startday month get day 1 sub add 7 mod def
+      gsave
+      day_names wkd get width center
+      phase .35 ge phase .65 le and {
+        setforeground show
+      } {
+        phase .85 gt phase .15 lt or {
+          setbackground show
+        } {
+          true charpath gsave setbackground
+          fill grestore stroke
+        } ifelse
+      } ifelse
+      grestore
+    } if
+    /n n 1 add def
+    Xnext Ynext rmoveto
+  } for
+  grestore
+} def
+
+/drawsmweekdays {
+  dayfont findfont sm_weekdayfontsize scalefont setfont
+  /n day 1 sub 12 mul def
+  gsave
+  negwidth 0.27 mul negheight 0.27 mul sm_weekdayfontsize 0.75 mul sub rmoveto
+  0 1 11 {
+    /month exch def
+    /phase moon_phases n get def
+    phase 0 ge {
+      /wkd startday month get day 1 sub add 7 mod def
+      gsave
+      day_names wkd get
+      dup stringwidth pop neg 0 rmoveto
+      show
+      grestore
+    } if
+    /n n 1 add def
+    Xnext Ynext rmoveto
+  } for
+  grestore
+} def
+
+/domoon {
+  /phase exch def
+  gsave
+  currentpoint translate
+  newpath
+  phase halfperiod .01 sub ge phase halfperiod .01 add le and {
+    0 0 radius
+    0 360 arc stroke
+  } {
+    0 0 radius
+    0 0 radius
+    phase halfperiod lt {
+      270 90 arc stroke
+      0 radius neg moveto
+      270 90 arcn
+    } {
+      90 270 arc stroke
+      0 radius neg moveto
+      270 90 arc
+      /phase phase halfperiod sub def
+    } ifelse
+    /x1 quartperiod phase sub rect mul def
+    /y1 x1 abs 2 sqrt div def
+    x1
+    y1
+    x1
+    y1 neg
+    0
+    radius neg
+    curveto
+    fill
+  } ifelse
+  grestore
+} def
+
+/drawmoons {
+  /n day 1 sub 12 mul def
+  gsave
+  0 1 11 {
+    /phase moon_phases n get def
+    phase 0 ge {
+      phase domoon
+    } if
+    /n n 1 add def
+    pop
+    width 0 rmoveto
+  } for
+  grestore
+} def
+
+/calendar {
+  /fudge fudge1 def
+  startpage
+  drawtitle
+  0 10 moveto
+  drawmonths
+  /Y0 neghalfheight def
+  1 1 31 {
+    /day exch def
+    halfwidth Y0 day 1 sub negheight mul add moveto
+    drawdate
+    drawmoons
+    draw_weekdays {
+      drawweekdays
+    } {
+      drawsmweekdays
+    } ifelse
+    day pagebreak eq {
+      showpage
+      /fudge fudge2 def
+      startpage
+      /Y0 Y0 pageheight add def
+    } if
+  } for
+  0 Y0 31 negheight mul add moveto
+  drawmonths
+  showpage
+} def

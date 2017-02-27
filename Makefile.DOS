@@ -1,0 +1,87 @@
+# 
+# Makefile for 'lcal' under MS-DOS
+#
+# v2.0.0: Bill Marr
+# 
+#    Created this makefile based on the 'pcal' equivalent makefile for DOS.
+# 
+# Uses TurboC or Borland C++ command line compiler:
+#    
+#    make -f Makefile.DOS
+# 
+# Define various directories for the following items:
+# 
+#    - source code
+#    - object code
+#    - installed 'lcal' executable
+# 
+# This 'make' file mimics the Unix 'Makefile' file, by defining separate
+# directories for the source, the objects, and the executable.  However,
+# unlike the Unix compilers, the Borland C (DOS) compiler had trouble with
+# creating the objects and executable code in subdirectories, so for now,
+# we're just using the same actual destination directory ('.') for all of
+# them.
+# 
+SRCDIR	= .
+OBJDIR	= .
+EXECDIR	= .
+
+# 
+# Use the Borland C++ compiler (v5.0)...
+# 
+CC = bcc
+
+# 
+# Select the appropriate memory model:
+# 
+#    t = tiny     (code+data < 64K)
+#    s = small    (code < 64K, data < 64K)
+#    c = compact  (code < 64K, data < 16M)
+#    m = medium   (code < 16M, data < 64K)
+#    l = large    (code < 16M, data < 16M)
+#    h = huge     (same as 'large', but allows > 64K total static data)
+# 
+MODEL = s
+
+# 
+# Enable certain compile flags:
+#    
+#    -DBUILD_ENV_MSDOS   declare that we're building for MS-DOS
+#    
+# Borland compiler flags:
+#    
+#    -m($MODEL)   use specified memory model
+#    -N           check for 'stack overflow' condition
+#    -v-          disable debugging information
+#    -w-pia       disable warning 'Possibly incorrect assignment'
+#    -w-rvl       disable warning 'Function should return a value in function xxx'
+#    -w-par       disable warning 'Parameter xxx is never used in function xxx'
+#    
+CFLAGS	= -DBUILD_ENV_MSDOS -I$(SRCDIR) \
+		-m$(MODEL) -N -v- -w-pia -w-rvl -w-par
+
+OBJECTS = $(OBJDIR)\lcal.obj
+
+$(EXECDIR)\lcal.exe:	$(OBJECTS)
+	$(CC) -m$(MODEL) $(LDFLAGS) $(OBJECTS)
+	@ echo Build of 'lcal' for MS-DOS completed.
+
+$(OBJDIR)\lcal.obj:	$(SRCDIR)\lcal.c $(SRCDIR)\lcaldefs.h
+	$(CC) $(CFLAGS) $(COPTS) -c $(SRCDIR)\lcal.c
+
+# 
+# This target will delete everything except the 'lcal' executable.
+# 
+clean:
+	del $(OBJDIR)\*.obj
+
+# 
+# This target will delete everything, including the 'lcal' executable.
+# 
+clobber: clean
+	del $(EXECDIR)\lcal.exe
+
+# 
+# This target will delete everything and rebuild 'lcal' from scratch.
+# 
+fresh:	clobber lcal.exe

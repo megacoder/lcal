@@ -1,0 +1,283 @@
+.\" 
+.\" lcal.man - documentation for Lcal
+.\" 
+.\" This 'man' page may be generated in alternate formats with any
+.\" of the following commands:
+.\"    
+.\"    groff -man -Tps lcal.man >lcal-help.ps
+.\"    groff -man -Thtml lcal.man >lcal-help.html
+.\"    groff -man -Tascii lcal.man >lcal-help.txt
+.\"    
+.\" Revision History:
+.\"
+.\" 2.1.0
+.\"     
+.\"    2007-10-07 -- changes by Bill Marr (marr99@users.sourceforge.net): 
+.\"    
+.\"       Update version number and date.
+.\"       
+.\"       Eliminate '-i' option and describe enhanced '-s' option.
+.\"       
+.\"       Clarify exactly what is printed with the '-t' font option.
+.\"       
+.\" 2.0.0
+.\"     
+.\"    2006-06-24 -- changes by Bill Marr (marr99@users.sourceforge.net): 
+.\"    
+.\"       Update version number and date.
+.\"       
+.\"       Start this 'Revision History' comment block.
+.\"       
+.\"       Add the 'man page generation' comments in the header (above).
+.\"       
+.\"       Add a link to the website where 'lcal' (and 'pcal') can be found.
+.\"       
+.\"       Expand the comments on the use of the time-zone option ('-z'). Also,
+.\"       make it clear that fractional values are allowed for the timezone 
+.\"       value specification.
+.\"       
+.\"       Expand the comments on the use of the background/foreground colors
+.\"       option ('-s'). 
+.\"       
+.\"       Make note of the options/values which can be specified
+.\"       semi-permanently via the makefile.
+.\"       
+.\"       Various tweaks and clarifications.
+.\"       
+.TH LCAL 1 "07 Oct 2007" "Version 2.1.0" "USER COMMANDS"
+.SH NAME
+lcal \- generate PostScript lunar phase calendars
+.SH SYNOPSIS
+.na
+.in +5n
+.ti -5n
+.B lcal
+[\fB\-d\fP\ [\fIday_font\fP\|]]
+[\fB\-t\fP\ [\fItitle_font\fP\|]]
+[\fB\-o\fP\ \fIfile\fP\|]
+[\fB\-l\fP\ |\ \fB\-p\fP]
+[\fB\-s\fP\ \fItext_color\fP[/\fIpage_bg_color\fP[/\fImoon_dark_color\fP[/\fImoon_light_color\fP]]]]
+[\fB\-z\fP\ \fItime_zone\fP\|]
+[\fB\-S\fP]
+[\fB\-O\fP]
+[\fB\-X\fP\ [\fIx1\fP[/\fIx2\fP\|]]]
+[\fB\-Y\fP\ [\fIy1\fP[/\fIy2\fP\|]]]
+[\fB\-W\fP]
+[\fB\-h\fP\ |\ \fB\-u\fP\ |\ \fB\-v\fP]
+[year]
+.SH DESCRIPTION
+.I Lcal
+generates PostScript to produce lunar phase calendars for any year, in either
+landscape or portrait orientations.  Output can be in any of 3 formats: 2-page
+(default), compressed 1-page, or odd-days-only (uncompressed, 1-page).
+.PP
+The
+.B year
+argument, if provided,
+may be specified as either 1 or 2 digits or as the full 4 digit year;
+if omitted, the calendar for the current
+year will be generated.
+
+.\" ------------------------------------------------------------------
+
+.SH OPTIONS
+If the environment variable
+.BR LCAL_OPTS
+is defined, its contents are parsed as a command line.  Flags set via
+.BR LCAL_OPTS
+override the program defaults, but are overridden by options set
+explicitly on the command line.
+.PP
+Any flag which normally takes an argument may also be specified without an
+argument; this resets the corresponding option to its default.  In some cases,
+like when a parameter follows a flag without its optional argument, this may
+lead to ambiguity; the dummy flag '-' (or '--') may be used to separate them,
+e.g. "lcal -t - 2008".
+.TP
+.BI \-d " \fR[\fIfont\fR]"
+Specifies the name of the font used to print the (abbreviated) day-of-week
+names near (or inside) each moon.
+.LP
+.IP
+The default font is `Times-Bold'.
+.IP
+This option may also be set semi-permanently by altering the makefile
+(`Makefile' for most environments, 'Makefile.DOS' for MS-DOS).
+.TP
+.BI \-t " \fR[\fIfont\fR]"
+Specifies the name of the font used to print the year, the abbreviated month
+names, and the days of the month.
+.LP
+.IP
+The default font is `Times-Bold'.
+.IP
+This option may also be set semi-permanently by altering the makefile
+(`Makefile' for most environments, 'Makefile.DOS' for MS-DOS).
+.TP
+.BI \-o " file"
+Directs
+.I lcal
+to write the output to
+.I file
+instead of to stdout.
+.TP
+.B \-l
+Causes the output to be in landscape orientation (default).
+.TP
+.B \-p
+Causes the output to be in portrait orientation.
+.TP
+.BI \-s " text_color[/page_bg_color[/moon_dark_color[/moon_light_color]]]]"
+Overrides the default values for the various colors.
+.LP
+.IP
+It is acceptable to specify fewer than all 4 colors.  That is, you can specify
+just the text color, for example, by only supplying 1 color value.  Multiple
+color value specifications must be separated by a forward slash ('/').
+.LP
+.IP
+The `text' color is used to print all the text (year, month, day-of-month, and
+day-of-week).  The `page background' color will flood the page with the
+specified color.  This is useful, for example, to provide a light grey
+background (e.g. 0.9) which makes the white in the moons stand out better.
+The `moon dark' and `moon light' colors specify the colors to be used for the
+moons.  Don't do something silly like specifying a dark color for the 'moon
+light color' and vice versa or you'll wind up with a very misleading lunar
+calendar!
+.LP
+.IP
+The default values will cause black text to appear on a white page background
+with black for the dark part of the moon and white for the light part of the
+moon.
+.LP
+.IP
+For monochrome output/printers, these values must be in the range 0.0 (black)
+through 1.0 (white).  For color output/printers, any or all of the colors may
+be specified as a set of \fIred\fP:\fIgreen\fP:\fIblue\fP values; \fIred\fP,
+\fIgreen\fP, and \fIblue\fP must in the range 0.0 through 1.0.  At least one
+colon (':') must be present for this option to be recognized; omitted values
+are set to 0.0.
+.LP
+.IP
+A good example of a highly-colorized calendar (assuming you don't want to
+waste the ink/toner to print it!) would be:
+
+   lcal -O -s 0:1:1/0:0:0.7/0/1:1:0 | gv - -land
+
+This provides a one-page (odd-days-only) lunar calendar with cyan text
+('0:1:1') on a midnight blue background ('0:0:0.7') with black/yellow
+('0/1:1:0') moons.  The output is piped into the 'GhostView' PostScript
+previewer and forced to landscape page orientation.
+
+Or, if you prefer light-grey moons:
+
+   lcal -O -s 0:1:1/0:0:0.7/0/0.9 | gv - -land
+
+.TP
+.BI \-z " time_zone"
+Specifies the local time zone, expressed as hours west of UTC.
+.IP
+For example, New York residents (USA Eastern time zone) would use '-z 5' while
+on Eastern Standard Time (winter) and '-z 4' while on Eastern Daylight Time
+(summer).  People in India would use '-z-5.5'.  Notice that fractional values
+are allowed.
+.IP
+This option may also be set semi-permanently by altering the makefile
+(`Makefile' for most environments, 'Makefile.DOS' for MS-DOS).
+.TP
+.B \-S
+Compresses the output to fit a full year on a single page. Compare the '-O'
+option.
+.TP
+.B \-O
+Display only the odd days of the month, allowing a full year to fit on a
+single page without compression. Compare the '-S' option.
+.TP
+.BI \-X " \fR[\fIx1\fR[/\fIx2\fR]\fR]"
+Specifies the X-axis translation values (page 1 / page 2) for positioning the
+output on the page.  Should only be needed for calendars in landscape
+orientation.
+.IP
+This option may also be set semi-permanently by altering the makefile
+(`Makefile' for most environments, 'Makefile.DOS' for MS-DOS).
+.TP
+.BI \-Y " \fR[\fIy1\fR[/\fIy2\fR]\fR]"
+Similar to the
+.B \-X
+option, but specifies the Y-axis translation values for positioning the output
+on the page.  Should only be needed for calendars in portrait orientation.
+.LP
+.IP
+By default,
+.I lcal
+will attempt to print 2-page calendars such that the last moons on the first
+page are immediately adjacent to the first moons on the second page.  However,
+many printers can't actually print to the edges of the physical page.
+.IP
+The
+.B \-X
+and
+.B \-Y
+options allow the user to compensate for these printer-to-printer variations
+in the positioning of output.  You may find that the use of \fB-X-20/20\fP
+(for landscape-oriented calendars) or \fB-Y20/-20\fP (for portrait-oriented
+calendars) improves the situation.
+.IP
+This option may also be set semi-permanently by altering the makefile
+(`Makefile' for most environments, 'Makefile.DOS' for MS-DOS).
+.TP
+.B \-W
+Causes
+.I lcal
+to print the (abbreviated) day-of-week names in the center of the moon icons
+(instead of to the lower left, which is the default).
+.LP
+.IP
+Use of this option results in more-complex PostScript output, which is slower
+when previewing or printing.
+.TP
+.B \-h
+Displays version information, a brief parameter usage message, and a full
+explanation of all options.
+.TP
+.B \-u
+Displays version information and a brief parameter usage message.
+.TP
+.B \-v
+Displays version information only.
+.SH SEE ALSO
+Website for
+.I lcal
+and
+.I pcal
+(a conventional calendar generation application, similar to
+.I lcal
+):
+.PP
+   http://pcal.sourceforge.net
+.SH ACKNOWLEDGMENT
+.I Lcal
+was inspired by "Moonlight 1996", a 16" x 36" full-color (silver moons against
+a midnight blue background) lunar phase calendar marketed by Celestial
+Products, Inc., P.O. Box 801, Middleburg VA 22117 (20118, circa 2007).  Send
+for their catalog to see (and, hopefully, order) this as well as some even
+more amazing stuff - particularly "21st Century Luna", a 22" x 72" lunar phase
+calendar for \fIevery day\fP of the upcoming century.  Or visit their site:
+.PP
+   http://www.celestialproducts.com
+.SH AUTHORS
+.I Lcal
+was written by Andrew Rogers.  It is largely based on 
+.I pcal
+, originally written by Patrick Wood (Copyright (c) 1987 by Patrick Wood of
+Pipeline Associates, Inc.), and authorized for modification and
+redistribution.  The original C version of 
+.I pcal
+was created by Ken Keirnan; the moon phase routines were written by Jef
+Poskanzer and Craig Leres (copyright 1988, with permission to use, copy,
+modify, and distribute) and modified further by Mark Hanson (PostScript) and
+Richard Dyson (C).  Later changes to
+.I lcal
+(the addition of the odd-days-only [1-page uncompressed] format, enhanced
+colorization options, various cleanups, design improvements, and bug fixes)
+were made by Bill Marr.
